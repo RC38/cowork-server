@@ -1,0 +1,99 @@
+{
+  "id": "hugegraph",
+  "label": "HugeGraph",
+  "aliases": [
+    "apache hugegraph",
+    "huge graph",
+    "gremlin database"
+  ],
+  "keywords": [
+    "graph",
+    "database",
+    "gremlin",
+    "tinkerpop",
+    "vertices",
+    "edges",
+    "hubble",
+    "vermeer",
+    "gdb"
+  ],
+  "description": "Connect to an Apache HugeGraph graph database and run Gremlin queries over its REST API.",
+  "category": "database",
+  "logo": "database",
+  "logo_color": "#E8590C",
+  "form": {
+    "form_id": "hugegraph-connector",
+    "title": "Connect HugeGraph",
+    "subtitle": "Provide your HugeGraph REST host, ports, and graph name to get started.",
+    "logo": "database",
+    "logo_color": "#E8590C",
+    "methods": [
+      {
+        "id": "rest-api",
+        "label": "REST API (Gremlin over HTTP)",
+        "description": "Enter your HugeGraph server host, the REST and Gremlin ports, and the name of the graph instance to query. Works with any self-hosted Apache HugeGraph deployment.",
+        "recommended": true,
+        "how_to": "## Connect via the HugeGraph REST API\n\nHugeGraph exposes two HTTP endpoints you'll use:\n\n- **REST API** (default port `18088`) — for graph management and schema/data operations: `GET /graphs`, `/graphs/{graph}/schema/*`, `POST /graphs/{graph}/graph/vertices`, `POST /graphs/{graph}/graph/edges`.\n- **Gremlin Server over REST** (default port `18182` — a *separate* port from the REST API) — for running Gremlin queries: `POST {host}:{gremlin_port}/gremlin` with body `{\"gremlin\": \"<script>\"}`. Responses come back as `{\"status\": {\"code\": 200}, \"result\": {\"data\": ...}}`.\n\n### Steps\n\n1. Enter the **Host** — hostname or IP of your HugeGraph server (e.g. `10.36.28.2` or `127.0.0.1`).\n2. Keep the default ports unless your deployment differs: REST `18088`, Gremlin `18182`. In a standard docker-compose / Helm deployment these are separate services on separate ports.\n3. Enter the **Graph** name — the HugeGraph instance to query (e.g. `hugegraph`). This is used in `/graphs/{name}` paths and, importantly, as the Gremlin binding name: every script must start with `def g = this.binding.getAt(\"DEFAULT-{graph}\").traversal();` before using `g.V()`, `g.E()`, etc.\n4. Optionally set **Hubble Port** (`18085`) for the Hubble web UI and **Vermeer Port** (`18688`) for the Vermeer analytics service (healthcheck: `GET {host}:{vermeer_port}/api/v1/healthcheck`, where `errcode` 0 means healthy).\n\n### Notes\n\n- Most self-hosted deployments run with open REST access (no auth). If your deployment has authentication enabled, note it here and Anton will adapt.\n- A quick way to verify the graph name: `GET {host}:{rest_port}/graphs` returns a JSON list of configured graphs.\n",
+        "help_url": "https://hugegraph.apache.org/docs/apis/rest-api/",
+        "fields": [
+          {
+            "name": "host",
+            "label": "Host",
+            "type": "text",
+            "required": true,
+            "placeholder": "10.36.28.2 or 127.0.0.1",
+            "description": "Hostname or IP address of your HugeGraph server."
+          },
+          {
+            "name": "rest_port",
+            "label": "REST Port",
+            "type": "text",
+            "required": false,
+            "default": "18088",
+            "placeholder": "18088",
+            "description": "HugeGraph REST API port. Default is 18088."
+          },
+          {
+            "name": "gremlin_port",
+            "label": "Gremlin Port",
+            "type": "text",
+            "required": false,
+            "default": "18182",
+            "placeholder": "18182",
+            "description": "Gremlin Server (over REST) port. Default is 18182 — separate from the REST API port in standard deployments."
+          },
+          {
+            "name": "graph",
+            "label": "Graph",
+            "type": "text",
+            "required": true,
+            "default": "hugegraph",
+            "placeholder": "hugegraph",
+            "description": "Name of the HugeGraph instance to query. Used in /graphs/{name} paths and as the Gremlin binding DEFAULT-{name}."
+          },
+          {
+            "name": "hubble_port",
+            "label": "Hubble Port (optional)",
+            "type": "text",
+            "required": false,
+            "default": "18085",
+            "placeholder": "18085",
+            "description": "Port of the Hubble web UI, if deployed. Default is 18085."
+          },
+          {
+            "name": "vermeer_port",
+            "label": "Vermeer Port (optional)",
+            "type": "text",
+            "required": false,
+            "default": "18688",
+            "placeholder": "18688",
+            "description": "Port of the Vermeer analytics service, if deployed. Healthcheck: GET /api/v1/healthcheck (errcode 0 = ok). Default is 18688."
+          }
+        ]
+      }
+    ],
+    "logo_url": "logos/hugegraph.svg"
+  },
+  "logo_url": "logos/hugegraph.svg",
+  "featured": false
+}
